@@ -41,7 +41,7 @@ class customStreamListener(StreamListener):
       Now for the real part, the part before is just to make sure that the bot should answer
       '''
   def on_error(self, error):
-    jdataerror = json.loads(error)
+    print METHOD+": "+str(error)
     time.sleep(5)
     return True
     
