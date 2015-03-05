@@ -13,7 +13,7 @@ TWITTER_CONSUMER_KEY = "TWITTER_CONSUMER_KEY"
 TWITTER_CONSUMER_SECRET = "TWITTER_CONSUMER_SECRET"
 TWITTER_ACCESS_KEY = "TWITTER_ACCESS_KEY"
 TWITTER_ACCESS_SECRET = "TWITTER_ACCESS_SECRET"
-SELF_ID = "12345"
+SELF_ID = "1234567890" #Find this when making the app on Twitter
 
 TWITTER_HANDLE = "@tweetedpi" #You may change based on the handle
 
@@ -26,33 +26,42 @@ pi = Decimal("3.1415926535897932384626433832795028841971693993751058209749445923
 #First 200 digits of Pi after the decimal
 
 class customStreamListener(StreamListener):
-  '''
-  The main code
-  '''
-  def on_data(self, data):
-    print "%s: Started at %s" % (METHOD, time.ctime())
-    jdata = json.loads(data.strip())
-    print METHOD+": Tweet from @"+jdata.get("user",{}).get("screen_name")+": "+jdata.get("text")
-    retweeted = jdata.get("retweeted")
-    from_self = jdata.get("user",{}).get("id_str","") == SELF_ID #Make sure not from self!
-    
-    if retweeted is not None and not retweeted and not from_self:
-      '''
-      Now for the real part, the part before is just to make sure that the bot should answer
-      '''
-  def on_error(self, error):
-    print METHOD+": "+str(error)
-    time.sleep(5)
-    return True
-    
+	'''
+	The main code
+	'''
+	def on_data(self, data):
+		print "%s: Started at %s" % (METHOD, time.ctime())
+		jdata = json.loads(data.strip())
+		print METHOD+": Tweet from @"+jdata.get("user",{}).get("screen_name")+": "+jdata.get("text")
+		retweeted = jdata.get("retweeted")
+		from_self = jdata.get("user",{}).get("id_str","") == SELF_ID #Make sure not from self!
+		
+		if retweeted is not None and not retweeted and not from_self:
+			'''
+			Now for the real part, the part before is just to make sure that the bot should answer
+			'''
+			reply_to = jdata.get('user',{}).get('screen_name')
+			reply_to_id = jdata.get("user",{}).get("id_str","")
+			begin = 0
+			end = 138-len(jdata.get('user',{}).get('screen_name'))
+			tweet = "@"+reply_to+" "+str(pi)[begin:end]
+			api.update_status(tweet, in_reply_to_status_id = reply_to_id)
+			print METHOD+": Replied to @"+reply_to+" with '"+str(pi)[begin:end]+"' ("+str(len(str(pi)[begin:end]))+" digits)"
+			print "%s: Ended at %s" % (METHOD, time.ctime())
+
+	def on_error(self, error):
+		print METHOD+": "+str(error)
+		time.sleep(5)
+		return True
+		
 
 def main():
-  '''
-  Just to activate Listener
-  '''
-  l = customStreamListener()
-  stream = Stream(api.auth, l)
-  while 1:
-    stream.filter(track=[TWITTER_HANDLE])
+	'''
+	Just to activate Listener
+	'''
+	l = customStreamListener()
+	stream = Stream(api.auth, l)
+	while 1:
+		stream.filter(track=[TWITTER_HANDLE])
 
 if __name__ == "__main__": main()
