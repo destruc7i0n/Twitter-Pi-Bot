@@ -8,10 +8,12 @@ import tweepy, time
 from tweepy import Stream, StreamListener #To get a live Stream of tweets
 from decimal import *
 
+METHOD = "CONSOLE"
 TWITTER_CONSUMER_KEY = "TWITTER_CONSUMER_KEY"
 TWITTER_CONSUMER_SECRET = "TWITTER_CONSUMER_SECRET"
 TWITTER_ACCESS_KEY = "TWITTER_ACCESS_KEY"
 TWITTER_ACCESS_SECRET = "TWITTER_ACCESS_SECRET"
+SELF_ID = "12345"
 
 TWITTER_HANDLE = "@tweetedpi" #You may change based on the handle
 
@@ -28,8 +30,16 @@ class customStreamListener(StreamListener):
   The main code
   '''
   def on_data(self, data):
-    jdata = json.loads(data)
+    print "%s: Started at %s" % (METHOD, time.ctime())
+    jdata = json.loads(data.strip())
+    print METHOD+": Tweet from @"+jdata.get("user",{}).get("screen_name")+": "+jdata.get("text")
+    retweeted = jdata.get("retweeted")
+    from_self = jdata.get("user",{}).get("id_str","") == SELF_ID #Make sure not from self!
     
+    if retweeted is not None and not retweeted and not from_self:
+      '''
+      Now for the real part, the part before is just to make sure that the bot should answer
+      '''
   def on_error(self, error):
     jdataerror = json.loads(error)
     time.sleep(5)
