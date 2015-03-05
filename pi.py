@@ -29,5 +29,6 @@ def main():
   '''
   Just to activate Listener
   '''
+  c = customStreamListener()
 
 if __name__ == "__main__": main()
