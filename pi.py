@@ -1,5 +1,6 @@
 '''
-Placeholder for now
+A basic Twitter Bot to tweet Pi to anyone who tweets to it.
+@author @TheDestruc7i0n
 '''
 try: import simplejson as json #Get a faster version of json, if this fails just import normal json
 except ImportError: import json
@@ -46,7 +47,7 @@ class customStreamListener(StreamListener):
 			end = 138-len(jdata.get('user',{}).get('screen_name'))
 			tweet = "@"+reply_to+" "+str(pi)[begin:end]
 			api.update_status(tweet, in_reply_to_status_id = reply_to_id)
-			print METHOD+": Replied to @"+reply_to+" with '"+str(pi)[begin:end]+"' ("+str(len(str(pi)[begin:end]))+" digits)"
+			print METHOD+": Replied to @"+reply_to+" with '"+str(pi)[begin:end]+"' ("+str(len(str(pi)[begin:end]))+" digits)" #Print how many digits of pi printed and the tweet
 			print "%s: Ended at %s" % (METHOD, time.ctime())
 
 	def on_error(self, error):
