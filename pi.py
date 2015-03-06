@@ -7,7 +7,7 @@ except ImportError: import json
 
 import tweepy, time #For timing
 from tweepy import Stream, StreamListener #To get a live stream of tweets that you can reply to
-from decimal import Decimal #To put pi into a decimal
+from decimal import Decimal #To put pi into a decimal (To make sure python does not round)
 
 METHOD = "CONSOLE"
 TWITTER_CONSUMER_KEY = "TWITTER_CONSUMER_KEY"
