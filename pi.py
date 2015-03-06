@@ -62,7 +62,7 @@ def main():
 	'''
 	l = customStreamListener()
 	stream = Stream(api.auth, l)
-	while 1:
+	while 1: #Just to make sure that the program runs forever
 		stream.filter(track=[TWITTER_HANDLE])
 
 if __name__ == "__main__": main()
