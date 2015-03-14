@@ -41,14 +41,19 @@ class customStreamListener(StreamListener):
 			'''
 			Now for the real part, the part before is just to make sure that the bot should answer
 			'''
-			reply_to = jdata.get('user',{}).get('screen_name') #Get screen name for whom to reply to
-			reply_to_id = jdata.get("user",{}).get("id_str","") #Get id of user to reply to
-			begin = 0
-			end = 138-len(jdata.get('user',{}).get('screen_name')) #Get as much pi as it can into a tweet
-			tweet = "@"+reply_to+" "+str(pi)[begin:end] #Get pi and put it into a tweet
-			api.update_status(tweet, in_reply_to_status_id = reply_to_id) #This replies
-			print METHOD+": Replied to @"+reply_to+" with '"+str(pi)[begin:end]+"' ("+str(len(str(pi)[begin:end]))+" digits)" #Print how many digits of pi printed and the tweet
-			print "%s: Ended at %s" % (METHOD, time.ctime()) #Debug
+			try:
+				reply_to = jdata.get('user',{}).get('screen_name') #Get screen name for whom to reply to
+				reply_to_id = jdata.get("user",{}).get("id_str","") #Get id of user to reply to
+				begin = 0
+				end = 138-len(jdata.get('user',{}).get('screen_name')) #Get as much pi as it can into a tweet
+				tweet = "@"+reply_to+" "+str(pi)[begin:end] #Get pi and put it into a tweet
+				api.update_status(tweet, in_reply_to_status_id = reply_to_id) #This replies
+				print METHOD+": Replied to @"+reply_to+" with '"+str(pi)[begin:end]+"' ("+str(len(str(pi)[begin:end]))+" digits)" #Print how many digits of pi printed and the tweet
+				print "%s: Ended at %s" % (METHOD, time.ctime()) #Debug
+			except tweepy.error.TweepError:
+				api.update_status("@"+reply_to+" Sorry, one tweet per person because of Twitter limitations.", in_reply_to_status_id = reply_to_id)
+				print METHOD+": Replied to @"+reply_to+" with 'Sorry, one tweet per person because of Twitter limitations.'"
+				pass			
 
 	def on_error(self, error):
 		print METHOD+": "+str(error) #Print error
